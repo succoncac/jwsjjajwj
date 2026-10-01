@@ -1,0 +1,1836 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   1. APPLE LIQUID GLASS / VISIONOS DESIGN TOKENS
+   ========================================================================== */
+:root {
+  /* Bảng màu kính Liquid Glass Thống Nhất & Chiều Sâu Đậm Đà */
+  --bg-deep: #070913;
+  --glass-surface: linear-gradient(145deg, rgba(16, 24, 44, 0.78) 0%, rgba(9, 14, 28, 0.88) 100%);
+  --glass-surface-elevated: linear-gradient(145deg, rgba(24, 34, 60, 0.92) 0%, rgba(13, 19, 36, 0.96) 100%);
+  --glass-surface-subtle: rgba(255, 255, 255, 0.04);
+  --glass-surface-input: rgba(10, 15, 30, 0.75);
+  --glass-surface-bar: rgba(11, 16, 32, 0.78);
+
+  --glass-border-outer: rgba(255, 255, 255, 0.12);
+  --glass-border-outer-hover: rgba(255, 255, 255, 0.28);
+  --glass-border-inner: rgba(255, 255, 255, 0.35);
+  
+  --glass-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.65), 
+                  inset 0 1px 1px rgba(255, 255, 255, 0.22),
+                  inset 0 -1px 1px rgba(255, 255, 255, 0.03);
+  --glass-shadow-elevated: 0 40px 80px -15px rgba(0, 0, 0, 0.8), 
+                          inset 0 1px 1px rgba(255, 255, 255, 0.35),
+                          0 0 35px rgba(99, 102, 241, 0.15);
+
+  /* Quang học khúc xạ Apple VisionOS - Ổn định GPU, không gây xé hình */
+  --blur-strength: 28px;
+  --saturation: 175%;
+  --contrast: 104%;
+
+  /* Hệ màu nhận diện & Highlight */
+  --indigo: #6366f1;
+  --indigo-glow: rgba(99, 102, 241, 0.4);
+  --indigo-subtle: rgba(99, 102, 241, 0.16);
+  --pink-nsfw: #ec4899;
+  --pink-glow: rgba(236, 72, 153, 0.55);
+  --green: #22c55e;
+  --green-glow: 0 0 12px rgba(34, 197, 94, 0.7);
+  --danger: #ef4444;
+  --warn: #f59e0b;
+
+  /* Typography chuẩn Apple Liquid */
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.75);
+  --text-tertiary: rgba(255, 255, 255, 0.48);
+
+  /* Biến tương thích ngược */
+  --bg: #070913;
+  --bg-panel: var(--glass-surface);
+  --bg-card: var(--glass-surface);
+  --bg-card-hover: var(--glass-surface-elevated);
+  --bg-input: var(--glass-surface-input);
+  --line: var(--glass-border-outer);
+  --line-hover: var(--glass-border-outer-hover);
+  --line-active: rgba(99, 102, 241, 0.7);
+  --fg: var(--text-primary);
+  --fg2: var(--text-secondary);
+  --muted: var(--text-tertiary);
+
+  /* Động lực học Apple Spring (Khí động học) */
+  --ease-apple: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --radius-sm: 14px;
+  --radius-md: 20px;
+  --radius-lg: 26px;
+  --radius-panel: 26px;
+  --radius-pill: 9999px;
+  --radius: 18px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+  background-color: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  height: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
+::selection {
+  background-color: rgba(99, 102, 241, 0.35);
+  color: #fff;
+}
+
+/* ==========================================================================
+   2. MÔI TRƯỜNG NỀN ĐỒNG NHẤT (COHESIVE DEEP OBSIDIAN CANVAS)
+   ========================================================================== */
+.viewport-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: var(--bg-deep);
+}
+
+.orb {
+  display: none !important;
+}
+
+#root {
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   3. QUANG HỌC KÍNH LỎNG & TƯƠNG TÁC ÁNH SÁNG THỜI GIAN THỰC
+   ========================================================================== */
+.liquid-glass,
+#sidebar,
+#main,
+.modal-card {
+  position: relative;
+  background: var(--glass-surface);
+  backdrop-filter: blur(var(--blur-strength)) saturate(var(--saturation)) contrast(var(--contrast));
+  -webkit-backdrop-filter: blur(var(--blur-strength)) saturate(var(--saturation)) contrast(var(--contrast));
+  border-radius: var(--radius-panel);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border-outer);
+  transition: border-color 0.3s var(--ease-apple), box-shadow 0.3s var(--ease-apple), background 0.3s var(--ease-apple);
+  box-sizing: border-box;
+}
+
+/* Luồng sáng theo con trỏ chuột thời gian thực (Specular Hotspot) */
+.liquid-glass::after,
+#sidebar::after,
+#main::after,
+.modal-card::after,
+.prov::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    550px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.08),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-apple);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.liquid-glass:hover::after,
+#sidebar:hover::after,
+#main:hover::after,
+.prov:hover::after {
+  opacity: 1;
+}
+
+/* Biến thể kính nổi nhẹ & Dock */
+.liquid-glass-subtle {
+  background: var(--glass-surface-subtle);
+  backdrop-filter: blur(25px) saturate(160%);
+  -webkit-backdrop-filter: blur(25px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.liquid-dock {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(45px) saturate(200%);
+  -webkit-backdrop-filter: blur(45px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+}
+
+/* ==========================================================================
+   4. BỐ CỤC CHÍNH ỨNG DỤNG (APP SHELL)
+   ========================================================================== */
+#app {
+  display: grid;
+  grid-template-columns: 310px minmax(0, 1fr);
+  height: 100dvh;
+  position: relative;
+  z-index: 1;
+  padding: 14px;
+  gap: 14px;
+}
+
+/* Sidebar: Bo cong Apple, Kính lỏng cao cấp */
+#sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  min-height: 0;
+  overflow: hidden;
+  z-index: 30;
+}
+
+.side-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 4;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.logo {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 10px;
+  background: linear-gradient(145deg, rgba(30, 41, 75, 0.95), rgba(14, 20, 40, 0.98));
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 16px rgba(99, 102, 241, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  flex-shrink: 0;
+}
+
+.disclaimer {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  position: relative;
+  z-index: 4;
+  flex-shrink: 0;
+}
+
+/* Danh sách Provider Cards: Cuộn mượt, không bao giờ đè bẹp card */
+.providers {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 6px;
+  position: relative;
+  z-index: 4;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Thanh cuộn tối ưu riêng cho danh sách nhà cung cấp */
+.providers::-webkit-scrollbar {
+  width: 5px;
+}
+.providers::-webkit-scrollbar-track {
+  background: transparent;
+}
+.providers::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-pill);
+}
+.providers::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.4);
+}
+
+/* Provider Card: CỐ ĐỊNH CHIỀU CAO TỰ NHIÊN (flex-shrink: 0), KHÔNG BAO GIỜ BỊ ĐÈ HAY CẮT NỘI DUNG */
+.prov {
+  position: relative;
+  flex-shrink: 0;
+  min-height: fit-content;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.25s var(--ease-apple);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prov:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.28);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 255, 255, 0.04);
+}
+
+.prov:active {
+  transform: scale(0.985);
+}
+
+.prov.active {
+  border-color: rgba(99, 102, 241, 0.7);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.22), rgba(15, 23, 42, 0.75));
+  box-shadow: 0 0 24px var(--indigo-glow), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+}
+
+.prov-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 4;
+}
+
+.dot {
+  display: none !important;
+}
+
+.prov-name {
+  font-weight: 700;
+  font-size: 13.5px;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chip {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-secondary);
+}
+
+.prov-sub {
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+  margin-top: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: relative;
+  z-index: 4;
+}
+
+/* Provider URL Box: Hiển thị đầy đủ đường dẫn API, không cắt bớt */
+.prov-url-box {
+  margin-top: 2px;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  font-size: 11px;
+  position: relative;
+  z-index: 4;
+}
+
+.prov-url-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.prov-url-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-tertiary);
+}
+
+.prov-mini-copy {
+  padding: 2px 7px !important;
+  font-size: 9.5px !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+  border-radius: var(--radius-pill) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  color: var(--text-secondary) !important;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-apple);
+}
+
+.prov-mini-copy:hover {
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+  transform: scale(1.02);
+}
+
+.prov-url-val {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.45;
+  word-break: break-all;
+  white-space: normal;
+  display: block;
+  user-select: text;
+}
+
+.prov-status-panel {
+  margin-top: 2px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  position: relative;
+  z-index: 4;
+}
+
+.prov-status-panel.ok {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #86efac;
+}
+
+.prov-status-panel.loading {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #fde68a;
+}
+
+.prov-status-panel.idle {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+}
+
+.status-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10.5px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.status-badge.ok { color: #4ade80; }
+.status-badge.loading { color: #fbbf24; }
+.status-badge.idle { color: var(--text-tertiary); }
+.status-count { font-size: 10.5px; font-weight: 600; color: rgba(255, 255, 255, 0.6); }
+.status-panel-body { font-size: 11px; line-height: 1.45; color: var(--text-secondary); word-break: break-word; }
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.68);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 115;
+  animation: fadeIn 0.25s var(--ease-apple);
+}
+
+.prov-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  position: relative;
+  z-index: 4;
+}
+
+.prov-actions button {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 6px 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.prov-actions button.danger {
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.prov-actions button.danger:hover {
+  background: rgba(239, 68, 68, 0.25);
+  color: #fff;
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.btn-add {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.18), rgba(99, 102, 241, 0.06));
+  border: 1px dashed rgba(99, 102, 241, 0.5);
+  color: #c7d2fe;
+  font-weight: 600;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-apple);
+  position: relative;
+  z-index: 4;
+}
+
+.btn-add:hover {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.32), rgba(99, 102, 241, 0.12));
+  border-color: var(--indigo);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px -4px var(--indigo-glow);
+}
+
+.side-bottom {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--glass-border-outer);
+  position: relative;
+  z-index: 4;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   5. KHUNG CHÍNH (MAIN VIEWPORT & TOOLBARS)
+   ========================================================================== */
+#main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  z-index: 10;
+}
+
+#topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--glass-border-outer);
+  background: var(--glass-surface-bar);
+  position: relative;
+  z-index: 5;
+}
+
+.grow {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+#modelInput, .model-select {
+  width: 100%;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+#activeProvBtn {
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 14px;
+  white-space: nowrap;
+  border-radius: var(--radius-pill);
+  max-width: 220px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.prov-btn-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+}
+
+.req-info {
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Settings Bar: Apple Liquid Glass Dynamic Control Strip */
+#settingsBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 18px;
+  border-bottom: 1px solid var(--glass-border-outer);
+  background: var(--glass-surface-bar);
+  font-size: 12px;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 5;
+}
+
+.settings-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.settings-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.settings-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  font-size: 12px;
+  white-space: nowrap;
+  transition: all 0.25s var(--ease-apple);
+  user-select: none;
+}
+
+.settings-chip:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.chip-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 11.5px;
+}
+
+.chip-num {
+  width: 52px;
+  height: 22px;
+  padding: 0 4px;
+  font-size: 11px;
+  text-align: center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  outline: none;
+}
+
+.chip-num:focus {
+  border-color: rgba(99, 102, 241, 0.7);
+  box-shadow: 0 0 8px var(--indigo-glow);
+}
+
+.settings-chip input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 75px;
+  height: 5px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.15);
+  outline: none;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.settings-chip input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid var(--indigo);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: transform 0.15s var(--ease-apple);
+}
+
+.settings-chip input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  box-shadow: 0 0 10px var(--indigo-glow);
+}
+
+.settings-chip.chip-clickable {
+  cursor: pointer;
+}
+
+.settings-chip.chip-clickable input[type="checkbox"] {
+  accent-color: var(--indigo);
+  cursor: pointer;
+}
+
+.settings-chip.chip-nsfw {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.settings-chip.chip-nsfw.active {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.3) 0%, rgba(219, 39, 119, 0.16) 100%);
+  border-color: rgba(244, 114, 182, 0.55);
+  box-shadow: 0 0 14px var(--pink-glow), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-weight: 700;
+}
+
+.settings-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 11.5px;
+  font-weight: 600;
+  border: 1px solid var(--glass-border-outer);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.25s var(--ease-apple);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  white-space: nowrap;
+}
+
+.settings-action-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.settings-action-btn.danger {
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.settings-action-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.22);
+  color: #fff;
+  border-color: rgba(239, 68, 68, 0.45);
+}
+
+/* System Instructions Panel */
+#sysPanel {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--glass-border-outer);
+  background: rgba(15, 23, 42, 0.45);
+  position: relative;
+  z-index: 5;
+}
+
+#sysPanel textarea {
+  width: 100%;
+  font-size: 13px;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.sys-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+}
+
+/* ==========================================================================
+   6. HỘI THOẠI & TIN NHẮN (MESSAGES VIEW)
+   ========================================================================== */
+#messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 24px 20px;
+  scroll-behavior: auto;
+  position: relative;
+  z-index: 4;
+}
+
+.empty {
+  max-width: 560px;
+  margin: 6vh auto;
+  padding: 36px 30px;
+  text-align: center;
+  background: var(--glass-surface);
+  backdrop-filter: blur(var(--blur-strength)) saturate(var(--saturation)) contrast(var(--contrast));
+  -webkit-backdrop-filter: blur(var(--blur-strength)) saturate(var(--saturation)) contrast(var(--contrast));
+  border: 1px solid var(--glass-border-outer);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--glass-shadow);
+  position: relative;
+}
+
+.empty h2 {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  margin-bottom: 14px;
+  text-shadow: 0 0 25px rgba(255, 255, 255, 0.55);
+  background: none !important;
+}
+
+.empty ol {
+  text-align: left;
+  display: inline-block;
+  margin-top: 16px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.empty code {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--glass-border-outer);
+  padding: 2px 7px;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.msg {
+  max-width: 760px;
+  width: 100%;
+  margin: 0 auto 18px;
+  animation: msgAppear 0.25s var(--ease-apple);
+}
+
+@keyframes msgAppear {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.msg-inner {
+  position: relative;
+  border: 1px solid var(--glass-border-outer);
+  border-radius: var(--radius);
+  background: rgba(13, 19, 36, 0.7);
+  backdrop-filter: blur(24px) saturate(170%);
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  padding: 16px 18px;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s var(--ease-apple);
+}
+
+.msg.user .msg-inner {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.28) 0%, rgba(15, 23, 42, 0.72) 100%);
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 12px 32px -8px var(--indigo-glow);
+}
+
+.msg.assistant .msg-inner {
+  background: rgba(13, 19, 36, 0.72);
+}
+
+.msg.error .msg-inner {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+.msg-head {
+  display: flex;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+
+.msg-body {
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.68;
+  font-size: 14.5px;
+  color: var(--text-primary);
+}
+
+.msg-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  opacity: 0.4;
+  transition: opacity 0.25s var(--ease-apple);
+}
+
+.msg:hover .msg-actions {
+  opacity: 1;
+}
+
+.msg-actions button {
+  padding: 4px 10px;
+  font-size: 11.5px;
+  border-radius: var(--radius-pill);
+}
+
+/* ==========================================================================
+   7. THANH SOẠN THẢO (COMPOSER / INPUT AREA)
+   ========================================================================== */
+#composer {
+  padding: 12px 20px 8px;
+  border-top: 1px solid var(--glass-border-outer);
+  background: var(--glass-surface-bar);
+  backdrop-filter: blur(var(--blur-strength)) saturate(var(--saturation));
+  -webkit-backdrop-filter: blur(var(--blur-strength)) saturate(var(--saturation));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 5;
+}
+
+.composer-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  width: 100%;
+}
+
+.composer-hints {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+  user-select: none;
+  line-height: 1.4;
+  flex-wrap: wrap;
+  padding-bottom: 2px;
+}
+
+.hint-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.key-cap {
+  display: inline-block;
+  padding: 1px 6px;
+  font-size: 10.5px;
+  font-family: inherit;
+  font-weight: 700;
+  color: #c7d2fe;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 5px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  line-height: 1.2;
+}
+
+.hint-sep {
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 10px;
+}
+
+#input {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  resize: none;
+  min-height: 44px;
+  max-height: 150px;
+  height: 44px;
+  border-radius: 16px;
+  padding: 10px 16px;
+  font-size: 14px;
+  line-height: 22px;
+  box-sizing: border-box;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  word-break: break-word;
+  white-space: pre-wrap;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--glass-border-outer);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+#input:focus:not(:focus-visible) {
+  border-color: rgba(99, 102, 241, 0.65);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18), 0 0 12px rgba(99, 102, 241, 0.2);
+  background: rgba(15, 23, 42, 0.88);
+}
+
+/* Nút bấm Pha Lê Lỏng (Crystal Liquid Glass Buttons) */
+.btn-send, .btn-stop, .btn-liquid {
+  flex-shrink: 0;
+  align-self: flex-end;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 22px;
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(25px) saturate(190%);
+  -webkit-backdrop-filter: blur(25px) saturate(190%);
+  transition: all 0.35s var(--ease-apple);
+}
+
+.btn-send {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.45) 0%, rgba(79, 70, 229, 0.25) 100%);
+  box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+.btn-send:hover:not(:disabled) {
+  transform: scale(1.04);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.6) 0%, rgba(79, 70, 229, 0.35) 100%);
+  box-shadow: 0 16px 36px -6px var(--indigo-glow), inset 0 1px 1px #fff;
+}
+
+.btn-send:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn-send:disabled {
+  opacity: 0.4;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.btn-send.nsfw-active {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.5) 0%, rgba(219, 39, 119, 0.3) 100%);
+  border-color: rgba(244, 114, 182, 0.5);
+  box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.4), 0 0 20px var(--pink-glow), inset 0 1px 1px rgba(255, 255, 255, 0.7);
+}
+
+.btn-send.nsfw-active:hover:not(:disabled) {
+  transform: scale(1.04);
+  box-shadow: 0 16px 36px -6px var(--pink-glow), inset 0 1px 1px #fff;
+}
+
+.btn-stop {
+  background: rgba(239, 68, 68, 0.25);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  color: #fca5a5;
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.25);
+}
+
+.btn-stop:hover {
+  background: rgba(239, 68, 68, 0.35);
+  transform: scale(1.03);
+}
+
+/* ==========================================================================
+   8. CỬA SỔ NỔI & HỘP THOẠI SPATIAL (MODALS & DIALOGS)
+   ========================================================================== */
+.modal, .overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 160;
+  background: rgba(3, 7, 18, 0.75);
+  backdrop-filter: blur(30px) saturate(190%);
+  -webkit-backdrop-filter: blur(30px) saturate(190%);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.modal-card {
+  width: min(560px, 94vw);
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 28px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(15, 23, 42, 0.7) 100%);
+  backdrop-filter: blur(40px) saturate(200%) contrast(105%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%) contrast(105%);
+  box-shadow: 0 35px 80px -10px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+  animation: modalSpring 0.4s var(--ease-apple);
+}
+
+@keyframes modalSpring {
+  from { transform: scale(0.94) translateY(12px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 4;
+}
+
+.modal-head h3 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.field {
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 4;
+}
+
+.field-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 580px) {
+  .field-grid-2 {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+.field label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.field input, .field select {
+  width: 100%;
+}
+
+.hint, .fnote {
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+  margin-top: 5px;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+/* Key Row: Đặt nút con mắt chuẩn xác bên trong góc phải ô nhập Key */
+.key-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.key-row input {
+  width: 100% !important;
+  padding-right: 44px !important;
+}
+
+.key-row .icon-btn,
+.key-row #toggleKeyVisBtn {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  color: var(--text-secondary);
+  border-radius: var(--radius-pill);
+  transition: all 0.2s var(--ease-apple);
+  z-index: 5;
+  padding: 0;
+}
+
+.key-row .icon-btn:hover,
+.key-row #toggleKeyVisBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  transform: translateY(-50%) scale(1.08);
+}
+
+/* Checkbox Row: Khoảng cách thông thoáng, căn giữa cân đối, không chạm sát */
+.chk-line, .custom-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 16px 0;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.2s var(--ease-apple);
+  position: relative;
+  z-index: 4;
+  user-select: none;
+}
+
+.chk-line:hover, .custom-checkbox-row:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.chk-line input[type="checkbox"], .custom-checkbox-row input[type="checkbox"] {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px;
+  accent-color: var(--indigo);
+  cursor: pointer;
+  margin: 0 !important;
+  flex-shrink: 0;
+}
+
+.chk-line label, .custom-checkbox-row label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  line-height: 1.45;
+  margin: 0 !important;
+  display: inline-block;
+  flex: 1;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+  position: relative;
+  z-index: 4;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.5) 0%, rgba(79, 70, 229, 0.3) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  padding: 8px 18px;
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+.btn-primary:hover {
+  transform: scale(1.03);
+  box-shadow: 0 10px 24px var(--indigo-glow), inset 0 1px 1px #fff;
+}
+
+.btn-danger-confirm {
+  background: rgba(239, 68, 68, 0.25);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  color: #fca5a5;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  padding: 8px 18px;
+}
+
+.btn-danger-confirm:hover {
+  background: rgba(239, 68, 68, 0.38);
+  color: #fff;
+  transform: scale(1.03);
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-secondary);
+  border-radius: var(--radius-pill);
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+/* ==========================================================================
+   9. ĐIỀU KHIỂN, MICRO-INTERACTIONS & CUSTOM FOCUS STATES
+   ========================================================================== */
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  outline: none;
+  transition: all 0.25s var(--ease-apple), box-shadow 0.25s var(--ease-apple), border-color 0.25s var(--ease-apple), transform 0.25s var(--ease-apple);
+}
+
+/* 1. Loại bỏ hoàn toàn viền outline mặc định màu xanh của trình duyệt */
+:focus {
+  outline: none !important;
+}
+
+/* Khi nhấp chuột hoặc chạm cảm ứng: Không hiện outline hay viền gắt gây khó chịu */
+button:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+select:focus:not(:focus-visible),
+textarea:focus:not(:focus-visible),
+.btn-primary:focus:not(:focus-visible),
+.btn-ghost:focus:not(:focus-visible),
+.btn-add:focus:not(:focus-visible),
+.btn-send:focus:not(:focus-visible),
+.icon-btn:focus:not(:focus-visible),
+.settings-action-btn:focus:not(:focus-visible),
+.settings-chip:focus:not(:focus-visible) {
+  outline: none !important;
+}
+
+/* Khi nhấp chuột vào ô nhập liệu: Hiển thị ánh sáng mềm tự nhiên */
+input:focus:not(:focus-visible),
+select:focus:not(:focus-visible),
+textarea:focus:not(:focus-visible) {
+  border-color: rgba(99, 102, 241, 0.6);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18), 0 0 12px rgba(99, 102, 241, 0.2);
+  background: rgba(15, 23, 42, 0.88);
+}
+
+/* 2 & 3. Hiệu ứng Focus Hiện Đại Dành Riêng Cho Điều Hướng Bàn Phím (Phím Tab / :focus-visible) */
+button:focus-visible,
+.btn-primary:focus-visible,
+.btn-ghost:focus-visible,
+.btn-add:focus-visible,
+.btn-send:focus-visible,
+.icon-btn:focus-visible,
+.settings-action-btn:focus-visible,
+.settings-chip:focus-visible,
+.prov:focus-visible {
+  outline: none !important;
+  border-color: rgba(165, 180, 252, 0.9) !important;
+  box-shadow: 0 0 0 2px var(--bg-deep), 0 0 0 4px rgba(99, 102, 241, 0.75), 0 0 20px rgba(99, 102, 241, 0.45) !important;
+  transform: translateY(-1.5px) scale(1.02);
+  z-index: 10;
+}
+
+/* Focus-visible cho ô nhập liệu văn bản, ô chọn và vùng nhập (input, select, textarea) */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none !important;
+  border-color: rgba(129, 140, 248, 0.9) !important;
+  box-shadow: 0 0 0 2px var(--bg-deep), 0 0 0 4px rgba(99, 102, 241, 0.65), 0 0 18px rgba(99, 102, 241, 0.35) !important;
+  background: rgba(15, 23, 42, 0.92) !important;
+  transform: translateY(-0.5px);
+  z-index: 10;
+}
+
+/* Focus-visible cho nút nguy hiểm (Xoá chat, huỷ...) */
+.btn-danger-confirm:focus-visible,
+.settings-action-btn.danger:focus-visible,
+#clearAllBtn:focus-visible {
+  border-color: rgba(252, 165, 165, 0.9) !important;
+  box-shadow: 0 0 0 2px var(--bg-deep), 0 0 0 4px rgba(239, 68, 68, 0.75), 0 0 20px rgba(239, 68, 68, 0.45) !important;
+}
+
+/* Focus-visible cho nút chế độ 18+ (NSFW) */
+.settings-chip.chip-nsfw:focus-visible {
+  border-color: rgba(244, 114, 182, 0.9) !important;
+  box-shadow: 0 0 0 2px var(--bg-deep), 0 0 0 4px rgba(236, 72, 153, 0.75), 0 0 20px rgba(236, 72, 153, 0.45) !important;
+}
+
+button {
+  cursor: pointer;
+  border: 1px solid var(--glass-border-outer);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+}
+
+button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--glass-border-outer-hover);
+  color: #fff;
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+input, select, textarea {
+  background: var(--glass-surface-input);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border-outer);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+}
+
+::placeholder {
+  color: var(--text-tertiary);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(35px) saturate(200%);
+  -webkit-backdrop-filter: blur(35px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius-pill);
+  padding: 10px 22px;
+  font-size: 13.5px;
+  font-weight: 600;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  z-index: 200;
+  animation: toastSpring 0.35s var(--ease-apple);
+}
+
+@keyframes toastSpring {
+  from { transform: translate(-50%, 16px) scale(0.95); opacity: 0; }
+  to { transform: translate(-50%, 0) scale(1); opacity: 1; }
+}
+
+/* Typing & Thinking Animation */
+.thinking {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: var(--radius-pill);
+  margin: 4px 0;
+}
+
+.thinking i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #a5b4fc;
+  display: inline-block;
+  animation: typingBounce 1.4s infinite ease-in-out both;
+  box-shadow: 0 0 8px var(--indigo-glow);
+}
+
+.thinking i:nth-child(1) { animation-delay: -0.32s; }
+.thinking i:nth-child(2) { animation-delay: -0.16s; }
+.thinking i:nth-child(3) { animation-delay: 0s; }
+
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1.2) translateY(-3px); opacity: 1; }
+}
+
+.thinking-text {
+  font-size: 12px;
+  color: #c7d2fe;
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+.cursor {
+  display: inline-block;
+  width: 7px;
+  height: 16px;
+  vertical-align: -2px;
+  margin-left: 3px;
+  background: linear-gradient(180deg, var(--indigo), #818cf8);
+  border-radius: 2px;
+  box-shadow: 0 0 10px var(--indigo-glow);
+  animation: cursorBlink 0.8s infinite var(--ease-apple);
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; transform: scaleY(1); }
+  50% { opacity: 0.15; transform: scaleY(0.85); }
+}
+
+.msg.streaming .msg-inner {
+  border-color: rgba(99, 102, 241, 0.5);
+  background: linear-gradient(180deg, rgba(30, 27, 75, 0.4), rgba(15, 23, 42, 0.7));
+  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.2);
+}
+
+.live-pulse-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.9);
+  animation: livePulse 1.5s infinite;
+  margin-right: 6px;
+}
+
+@keyframes livePulse {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 14px rgba(52, 211, 153, 1); }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+/* Error Log Viewer Styling */
+.active-prov-err-wrapper {
+  margin: 10px 20px 4px;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.err-viewer-container {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.err-viewer-container.compact {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+}
+
+.err-viewer-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.err-status-pill {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.err-viewer-title {
+  font-weight: 700;
+  font-size: 13px;
+  color: #fecaca;
+}
+
+.err-act-btn {
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--glass-border-outer);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+}
+
+.err-act-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+.err-act-btn.primary {
+  background: rgba(99, 102, 241, 0.28);
+  border-color: rgba(99, 102, 241, 0.5);
+  color: #c7d2fe;
+  font-weight: 600;
+}
+
+.err-code-box {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  color: #fecaca;
+  max-height: 140px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ==========================================================================
+   10. REFERENCE SPECIFICATION CLASSES (.card-*, .hero, .grid-layout)
+   ========================================================================== */
+.card-content {
+  padding: 36px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  z-index: 4;
+}
+
+.card-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+
+.card-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.card-body {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.metrics-panel {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.metric-pill {
+  padding: 16px;
+  border-radius: var(--radius-sm);
+}
+
+.metric-value {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.metric-name {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+/* ==========================================================================
+   11. RESPONSIVE OPTIMIZATION
+   ========================================================================== */
+.mobile-only {
+  display: none !important;
+}
+
+@media (max-width: 860px) {
+  #app {
+    grid-template-columns: 1fr;
+    padding: 6px;
+    gap: 0;
+    height: 100dvh;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(3, 7, 18, 0.75);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    z-index: 125;
+    animation: fadeIn 0.25s var(--ease-apple);
+    cursor: pointer;
+  }
+
+  #sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    height: 100dvh;
+    height: 100vh;
+    width: 88%;
+    max-width: 330px;
+    margin: 0;
+    border-radius: 0 26px 26px 0;
+    transform: translateX(-105%);
+    transition: transform 0.35s var(--ease-apple);
+    z-index: 130;
+    background: linear-gradient(145deg, rgba(20, 26, 45, 0.96) 0%, rgba(8, 12, 24, 0.98) 100%);
+    backdrop-filter: blur(40px) saturate(200%) contrast(105%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%) contrast(105%);
+    box-shadow: 24px 0 70px rgba(0, 0, 0, 0.9), inset -1px 0 1px rgba(255, 255, 255, 0.25);
+    border: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.25);
+    display: flex;
+    flex-direction: column;
+    padding: 18px 16px;
+  }
+
+  #sidebar.open {
+    transform: translateX(0);
+  }
+
+  #main {
+    border-radius: 18px;
+    height: 100%;
+  }
+
+  .mobile-only {
+    display: inline-grid !important;
+  }
+
+  .req-info {
+    display: none;
+  }
+
+  #topbar {
+    padding: 10px 14px;
+    gap: 8px;
+  }
+
+  #settingsBar {
+    padding: 6px 12px;
+    gap: 8px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+  }
+
+  .settings-controls-group {
+    flex-wrap: nowrap;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .settings-actions-group {
+    flex-wrap: nowrap;
+    gap: 6px;
+    flex-shrink: 0;
+    margin-left: 4px;
+  }
+
+  #settingsBar::-webkit-scrollbar {
+    display: none;
+  }
+
+  #messages {
+    padding: 14px 12px;
+  }
+
+  #composer {
+    padding: 10px 14px;
+    gap: 8px;
+  }
+
+  .msg-inner {
+    padding: 14px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  html, body {
+    font-size: 13.5px;
+  }
+  #topbar {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+  #activeProvBtn {
+    max-width: 130px;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  .modal-card {
+    padding: 18px;
+    border-radius: 20px;
+  }
+}

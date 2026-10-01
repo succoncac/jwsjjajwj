@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bgGradient" cx="50%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#1e294b"/>
+      <stop offset="60%" stop-color="#0e1428"/>
+      <stop offset="100%" stop-color="#070913"/>
+    </radialGradient>
+    <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#e0e7ff"/>
+      <stop offset="80%" stop-color="#a5b4fc"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+    <linearGradient id="miniStarGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+    <linearGradient id="borderGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.4)"/>
+      <stop offset="50%" stop-color="rgba(99,102,241,0.3)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0.1)"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="16" flood-color="#6366f1" flood-opacity="0.7"/>
+      <feDropShadow dx="0" dy="8" stdDeviation="24" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- PWA Solid Safe Background -->
+  <rect width="512" height="512" fill="#070913"/>
+
+  <!-- Liquid Glass Squircle Container -->
+  <rect x="32" y="32" width="448" height="448" rx="112" fill="url(#bgGradient)" stroke="url(#borderGlow)" stroke-width="3"/>
+
+  <!-- Inner Ambient Specular Arc -->
+  <path d="M 48 144 C 48 91 91 48 144 48 L 368 48 C 421 48 464 91 464 144" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+
+  <!-- Center Ambient Glow -->
+  <circle cx="246" cy="266" r="140" fill="#6366f1" opacity="0.2" filter="blur(30px)"/>
+
+  <!-- Main Crystalline AI 4-Point Star -->
+  <path d="M 246 100 C 246 195 246 195 341 266 C 246 337 246 337 246 432 C 246 337 246 337 151 266 C 246 195 246 195 246 100 Z"
+        fill="url(#starGradient)"
+        filter="url(#glow)"/>
+
+  <!-- Secondary Companion AI Sparkle -->
+  <path d="M 362 128 C 362 156 362 156 390 172 C 362 188 362 188 362 216 C 362 188 362 188 334 172 C 362 156 362 156 362 128 Z"
+        fill="url(#miniStarGradient)"
+        filter="drop-shadow(0 0 10px rgba(129,140,248,0.8))"/>
+
+  <!-- Third Micro Sparkle Accent -->
+  <circle cx="156" cy="172" r="5" fill="#ffffff" opacity="0.85" filter="drop-shadow(0 0 6px #818cf8)"/>
+</svg>

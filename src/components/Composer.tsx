@@ -1,0 +1,104 @@
+import React, { useRef, useEffect } from 'react';
+
+interface ComposerProps {
+  input: string;
+  onChangeInput: (val: string) => void;
+  onSend: () => void;
+  onStop: () => void;
+  isGenerating: boolean;
+  disabled: boolean;
+  isNsfw?: boolean;
+}
+
+export const Composer: React.FC<ComposerProps> = ({
+  input,
+  onChangeInput,
+  onSend,
+  onStop,
+  isGenerating,
+  disabled,
+  isNsfw = false,
+}) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Auto resize textarea height strictly bounded to avoid abnormal stretching
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (el) {
+      if (!input) {
+        el.style.height = '44px';
+        el.style.overflowY = 'hidden';
+        return;
+      }
+      el.style.height = '44px';
+      const scrollHeight = el.scrollHeight;
+      if (scrollHeight > 44) {
+        const clampedHeight = Math.min(scrollHeight, 150);
+        el.style.height = `${clampedHeight}px`;
+        el.style.overflowY = scrollHeight > 150 ? 'auto' : 'hidden';
+      } else {
+        el.style.height = '44px';
+        el.style.overflowY = 'hidden';
+      }
+    }
+  }, [input]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (!isGenerating && input.trim() && !disabled) {
+        onSend();
+      }
+    }
+  };
+
+  return (
+    <footer id="composer">
+      <div className="composer-row">
+        <textarea
+          ref={textareaRef}
+          id="input"
+          rows={1}
+          placeholder="Nhập tin nhắn của bạn..."
+          value={input}
+          onChange={(e) => onChangeInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          disabled={isGenerating}
+        />
+
+        {isGenerating ? (
+          <button
+            id="stopBtn"
+            type="button"
+            className="btn-stop"
+            onClick={onStop}
+            title="Dừng sinh phản hồi"
+          >
+            ⏹ Dừng
+          </button>
+        ) : (
+          <button
+            id="sendBtn"
+            type="button"
+            className={`btn-send ${isNsfw ? 'nsfw-active' : ''}`}
+            onClick={onSend}
+            disabled={disabled || !input.trim()}
+            title="Gửi tin nhắn (Enter)"
+          >
+            Gửi
+          </button>
+        )}
+      </div>
+
+      <div className="composer-hints">
+        <span className="hint-item">
+          Nhấn <kbd className="key-cap">Enter</kbd> để gửi
+        </span>
+        <span className="hint-sep">•</span>
+        <span className="hint-item">
+          <kbd className="key-cap">Shift</kbd> + <kbd className="key-cap">Enter</kbd> để xuống dòng
+        </span>
+      </div>
+    </footer>
+  );
+};
